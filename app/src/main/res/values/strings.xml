@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_sort">Sort</string>
+<string name="extraInfo">Post Walk Formalities\n
+        After the event please share photos through following mediums: \n
+        * Upload selected photographs to dedicated album in our FB group  \n
+        * Flickr: Add photos to our Flickr group \n
+        http://www.flickr.com/groups/bangalore_photowalk/ \n
+        and use tag \'blrphotowalk\' \n
+        *500px: Use tag \'blrphotowalk\'</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rutrum, velit et lacinia tincidunt, sapien libero ornare enim, at tincidunt mauris nibh nec nunc. Curabitur tristique ut dui vel laoreet. Praesent turpis lorem, feugiat a laoreet in, congue id felis. Fusce volutpat feugiat lacinia. Praesent efficitur, felis at blandit sollicitudin, ligula tortor accumsan leo, in congue nisi est ac diam. Integer mi tortor, lacinia id laoreet ut, tempus ut magna. Vivamus eu ultrices velit, eu sagittis erat. Ut vel urna egestas, commodo dui in, euismod ligula. Aliquam diam odio, condimentum a ante nec, venenatis maximus tellus. Ut ut posuere ante, tristique dapibus justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent interdum ligula ac ullamcorper ullamcorper.</string>
+</resources>
