@@ -44,7 +44,7 @@ public class DashboardRecyclerAdapter extends RecyclerView.Adapter<MovieViewHold
         String imgUrl = "http://image.tmdb.org/t/p/" + "w342" + itemList.get(position).getBackdrop_path();
         Logger.d("Adapter image", "url is " + imgUrl);
         holder.moviePhoto.setTag(itemList.get(position));
-        Picasso.with(context).load(imgUrl).transform(PaletteTransformation.instance()).into(holder.moviePhoto, new PaletteTransformation.PaletteCallback(holder.moviePhoto) {
+        Picasso.with(context).load(imgUrl).placeholder(R.drawable.ic_placeholder_movie).error(R.drawable.ic_placeholder_movie).transform(PaletteTransformation.instance()).into(holder.moviePhoto, new PaletteTransformation.PaletteCallback(holder.moviePhoto) {
             @Override
             protected void onSuccess(Palette palette) {
                 Palette.Swatch vibrant = palette.getDarkVibrantSwatch();

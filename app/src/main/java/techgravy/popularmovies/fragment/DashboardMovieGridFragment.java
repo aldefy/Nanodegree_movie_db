@@ -18,6 +18,7 @@ import butterknife.InjectView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import techgravy.popularmovies.BuildConfig;
 import techgravy.popularmovies.R;
 import techgravy.popularmovies.adapter.DashboardRecyclerAdapter;
 import techgravy.popularmovies.api.GetPopularMovieApi;
@@ -42,6 +43,7 @@ public class DashboardMovieGridFragment extends Fragment {
     private DashboardRecyclerAdapter rcAdapter;
     int page = 1;
     int sortOrder;
+    String apiKey;
     ProgressDialog loadingDialog;
     EndlessRecyclerOnScrollListener endlessRecyclerOnScrollListener;
 
@@ -52,6 +54,7 @@ public class DashboardMovieGridFragment extends Fragment {
         ButterKnife.inject(this, rootView);
         getPopularMovieApi = MovieApiGenerator.createService(GetPopularMovieApi.class);
         moviesList = new ArrayList<>();
+        apiKey = BuildConfig.API_KEY;
         setupViews();
         return rootView;
     }
@@ -83,10 +86,11 @@ public class DashboardMovieGridFragment extends Fragment {
     }
 
     private void fetchMovies(int page) {
-        loadingDialog.show();
+        if (page == 1)
+            loadingDialog.show();
         Logger.d("Movies page", "loading " + page);
         if (sortOrder == IntentUtils.POPULAR_SORT)
-            getPopularMovieApi.getMoviesByPopularity(page, "b6a0f31f0237fcf5b0ee5670bf2ef99b", new Callback<MovieResponseModel>() {
+            getPopularMovieApi.getMoviesByPopularity(page, apiKey, new Callback<MovieResponseModel>() {
                 @Override
                 public void success(MovieResponseModel movieResponseModel, Response response) {
                     Logger.d("Sucess", movieResponseModel.toString());
@@ -102,7 +106,7 @@ public class DashboardMovieGridFragment extends Fragment {
                 }
             });
         else
-            getPopularMovieApi.getMoviesByRating(page, "b6a0f31f0237fcf5b0ee5670bf2ef99b", new Callback<MovieResponseModel>() {
+            getPopularMovieApi.getMoviesByRating(page, apiKey, new Callback<MovieResponseModel>() {
                 @Override
                 public void success(MovieResponseModel movieResponseModel, Response response) {
                     Logger.d("Sucess", movieResponseModel.toString());

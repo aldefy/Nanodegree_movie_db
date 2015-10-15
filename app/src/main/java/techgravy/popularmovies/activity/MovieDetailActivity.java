@@ -19,21 +19,18 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.binaryfork.spanny.Spanny;
 import com.squareup.picasso.Picasso;
 
-import at.grabner.circleprogress.AnimationState;
-import at.grabner.circleprogress.AnimationStateChangedListener;
-import at.grabner.circleprogress.CircleProgressView;
-import at.grabner.circleprogress.TextMode;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import techgravy.popularmovies.BuildConfig;
 import techgravy.popularmovies.R;
 import techgravy.popularmovies.api.GetPopularMovieApi;
 import techgravy.popularmovies.generator.MovieApiGenerator;
@@ -70,7 +67,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     @InjectView(R.id.ratingTitle)
     TextView ratingTitle;
     @InjectView(R.id.topBarLayout)
-    LinearLayout topBarLayout;
+    RelativeLayout topBarLayout;
     @InjectView(R.id.plotOverviewTextView)
     TextView plotOverviewTextView;
     @InjectView(R.id.taglineText)
@@ -90,19 +87,17 @@ public class MovieDetailActivity extends AppCompatActivity {
     MovieDetailModel detailModel;
     @InjectView(R.id.tagText)
     TextView tagText;
-    @InjectView(R.id.circleView)
-    CircleProgressView mCircleView;
-    @InjectView(R.id.languageText)
-    TextView languageText;
+
     int circleColor;
     @InjectView(R.id.infoTitle)
     TextView infoTitle;
-    @InjectView(R.id.languageTitle)
-    TextView languageTitle;
-    @InjectView(R.id.castTitle)
-    TextView castTitle;
-    @InjectView(R.id.castText)
-    TextView castText;
+    @InjectView(R.id.runningTimeTextView)
+    TextView runningTimeTextView;
+    @InjectView(R.id.tagLineDivider)
+    View tagLineDivider;
+    @InjectView(R.id.releasedTextView)
+    TextView releasedTextView;
+    private String apiKey;
 
 
     @Override
@@ -111,8 +106,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         handleExtras();
         setContentView(R.layout.activity_detail);
         ButterKnife.inject(this);
+        apiKey = BuildConfig.API_KEY;
         getPopularMovieApi = MovieApiGenerator.createService(GetPopularMovieApi.class);
-        getPopularMovieApi.getMovieDetails(model.getId(), "b6a0f31f0237fcf5b0ee5670bf2ef99b", new Callback<MovieDetailModel>() {
+        getMovieDetails();
+        init();
+
+
+    }
+
+    private void getMovieDetails() {
+        getPopularMovieApi.getMovieDetails(model.getId(), apiKey, new Callback<MovieDetailModel>() {
             @Override
             public void success(MovieDetailModel movieDetailModel, Response response) {
                 detailModel = movieDetailModel;
@@ -124,10 +127,9 @@ public class MovieDetailActivity extends AppCompatActivity {
                     for (int i = 0; i < detailModel.getGenres().size(); i++) {
                         MovieGenres genres = detailModel.getGenres().get(i);
                         tagText.append(genres.getName() + "\n");
-
                     }
-                    setupRunTime(Float.valueOf(detailModel.getRuntime()));
-
+                    runningTimeTextView.setText("Runtime : " + detailModel.getRuntime() + " mins");
+                    releasedTextView.setText("Released : " + detailModel.getRelease_date());
                     Spanny spanny;
                     for (MovieProductionCompanies companies : detailModel.getProduction_companies()) {
                         spanny = new Spanny(companies.getName() + "\n", new BulletSpan());
@@ -137,12 +139,13 @@ public class MovieDetailActivity extends AppCompatActivity {
                         spanny = new Spanny(countries.getName() + "\n", new BulletSpan());
                         productionCountriesText.append(spanny);
                     }
-                   /* for (MovieSpokenLanguage language : detailModel.getSpoken_languages()) {
-                        spanny = new Spanny(language.getName() + "\n", new BulletSpan());
-                        languageText.append(spanny);
+
+                    if (!detailModel.getTagline().isEmpty())
+                        taglineText.setText(detailModel.getTagline());
+                    else {
+                        tagLineDivider.setVisibility(View.GONE);
+                        taglineText.setVisibility(View.GONE);
                     }
-*/
-                    taglineText.setText(detailModel.getTagline());
                 } catch (Exception e) {
                     e.printStackTrace();
                     Logger.e("Movie id ", model.getId() + "");
@@ -154,7 +157,12 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Logger.e("Movie Detail Error" + error.getMessage().toString());
             }
         });
-        getPopularMovieApi.getVideoForId(model.getId(), "b6a0f31f0237fcf5b0ee5670bf2ef99b", new Callback<MovieVideoResponseModel>() {
+        getMovieVideoForId(model);
+        getMovieCredits();
+    }
+
+    private void getMovieVideoForId(MovieResultsModel model) {
+        getPopularMovieApi.getVideoForId(model.getId(), apiKey, new Callback<MovieVideoResponseModel>() {
             @Override
             public void success(MovieVideoResponseModel movieResponseModel, Response response) {
                 videoId1 = movieResponseModel.getResults().get(0).getKey();
@@ -166,77 +174,22 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Logger.e("Video id Error" + error.getMessage().toString());
             }
         });
-        getPopularMovieApi.getMovieCredits(model.getId(), "b6a0f31f0237fcf5b0ee5670bf2ef99b", new Callback<MovieCreditsResponseModel>() {
+    }
+
+    private void getMovieCredits() {
+        getPopularMovieApi.getMovieCredits(model.getId(), apiKey, new Callback<MovieCreditsResponseModel>() {
             @Override
             public void success(MovieCreditsResponseModel movieCreditsResponseModel, Response response) {
-                Spanny spanny;
-              /*  for (MovieCreditsCastModel castModel : movieCreditsResponseModel.getCast()) {
-                    spanny = new Spanny(castModel.getName() + "\n", new BulletSpan());
-                    castText.append(spanny);
-                }*/
+                Logger.d("MovieCredits Response", movieCreditsResponseModel.toString());
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                Logger.e("MovieCredits Response", error.getMessage());
             }
         });
-        init();
-
-
     }
 
-    private void setupRunTime(float value) {
-        //value setting
-        Logger.d("movie runtime", value + "");
-        mCircleView.setMaxValue(180);
-        //show unit
-        mCircleView.setUnit("mins");
-        mCircleView.setShowUnit(true);
-
-        //text sizes
-        mCircleView.setAutoTextSize(true); // enable auto text size, previous values are overwritten
-        //color
-        //you can use a gradient
-        mCircleView.setBarColor(getResources().getColor(R.color.primary));
-        //or to use the same color as in the gradient
-        mCircleView.setText(value + "");
-        mCircleView.setTextColor(getResources().getColor(R.color.black_semi_transparent));
-        mCircleView.setTextMode(TextMode.TEXT); // Shows current percent of the current value from the max value
-        //spinning
-        mCircleView.spin(); // start spinning
-
-        //this example shows how to show a loading text if it is in spinning mode, and the current percent value otherwise.
-        mCircleView.setAnimationStateChangedListener(
-                new AnimationStateChangedListener() {
-                    @Override
-                    public void onAnimationStateChanged(AnimationState _animationState) {
-                        switch (_animationState) {
-                            case IDLE:
-                            case ANIMATING:
-                            case START_ANIMATING_AFTER_SPINNING:
-                                mCircleView.setTextMode(TextMode.TEXT); // show percent if not spinning
-                                mCircleView.setShowUnit(true);
-                                break;
-                            case SPINNING:
-                                mCircleView.setTextMode(TextMode.TEXT); // show text while spinning
-                                mCircleView.setShowUnit(false);
-                            case END_SPINNING:
-                                break;
-                            case END_SPINNING_START_ANIMATING:
-                                break;
-
-
-                        }
-                    }
-                }
-        );
-
-        mCircleView.setShowTextWhileSpinning(true); // Show/hide text in spinning mode
-        mCircleView.setValue(value);
-        mCircleView.stopSpinning(); // stops spinning. Spinner gets shorter until it disappears.
-        mCircleView.setValueAnimated(value); // stops spinning. Spinner spins until on top. Then fills to set value.
-    }
 
     private void init() {
 
@@ -281,6 +234,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         setupToolBar();
         plotOverviewTextView.setText(model.getOverview());
         ratingTitle.setText("Rating : " + model.getVote_average());
+
         locateFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
