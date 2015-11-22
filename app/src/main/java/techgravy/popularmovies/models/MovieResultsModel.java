@@ -1,18 +1,25 @@
 package techgravy.popularmovies.models;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
+import co.uk.rushorm.core.Rush;
+import co.uk.rushorm.core.RushCallback;
+import co.uk.rushorm.core.RushCore;
 
 /**
  * Created by aditlal on 26/09/15.
  */
-public class MovieResultsModel implements Serializable {
+public class MovieResultsModel implements Parcelable, Rush {
     private String vote_average;
 
     private String backdrop_path;
 
     private String adult;
-
-    private String id;
+    @SerializedName("id")
+    private String mId;
 
     private String title;
 
@@ -33,6 +40,9 @@ public class MovieResultsModel implements Serializable {
     private String video;
 
     private String popularity;
+
+    public MovieResultsModel() {
+    }
 
     public String getVote_average() {
         return vote_average;
@@ -58,13 +68,39 @@ public class MovieResultsModel implements Serializable {
         this.adult = adult;
     }
 
-    public String getId() {
-        return id;
+    public String getmId() {
+        return mId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setmId(String mId) {
+        this.mId = mId;
     }
+
+    @Override
+    public void save() {
+        RushCore.getInstance().save(this);
+    }
+
+    @Override
+    public void save(RushCallback callback) {
+        RushCore.getInstance().save(this, callback);
+    }
+
+    @Override
+    public void delete() {
+        RushCore.getInstance().delete(this);
+    }
+
+    @Override
+    public void delete(RushCallback callback) {
+        RushCore.getInstance().delete(this, callback);
+    }
+
+    @Override
+    public String getId() {
+        return RushCore.getInstance().getId(this);
+    }
+
 
     public String getTitle() {
         return title;
@@ -148,6 +184,45 @@ public class MovieResultsModel implements Serializable {
 
     @Override
     public String toString() {
-        return "ClassPojo [vote_average = " + vote_average + ", backdrop_path = " + backdrop_path + ", adult = " + adult + ", id = " + id + ", title = " + title + ", original_language = " + original_language + ", overview = " + overview + ", genre_ids = " + genre_ids + ", original_title = " + original_title + ", release_date = " + release_date + ", vote_count = " + vote_count + ", poster_path = " + poster_path + ", video = " + video + ", popularity = " + popularity + "]";
+        return "ClassPojo [vote_average = " + vote_average + ", backdrop_path = " + backdrop_path + ", adult = " + adult + ", mId = " + mId + ", title = " + title + ", original_language = " + original_language + ", overview = " + overview + ", genre_ids = " + genre_ids + ", original_title = " + original_title + ", release_date = " + release_date + ", vote_count = " + vote_count + ", poster_path = " + poster_path + ", video = " + video + ", popularity = " + popularity + "]";
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(vote_average);
+        dest.writeString(mId);
+        dest.writeString(backdrop_path);
+        dest.writeString(overview);
+        dest.writeString(original_title);
+    }
+
+    // Creator
+    public static final Parcelable.Creator<MovieResultsModel> CREATOR
+            = new Parcelable.Creator<MovieResultsModel>() {
+        public MovieResultsModel createFromParcel(Parcel in) {
+            return new MovieResultsModel(in);
+        }
+
+        public MovieResultsModel[] newArray(int size) {
+            return new MovieResultsModel[size];
+        }
+    };
+
+    // "De-parcel object
+    public MovieResultsModel(Parcel in) {
+        title = in.readString();
+        vote_average = in.readString();
+        mId = in.readString();
+        backdrop_path = in.readString();
+        overview = in.readString();
+        original_title = in.readString();
+    }
+
+
 }

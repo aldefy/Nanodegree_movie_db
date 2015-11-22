@@ -1,13 +1,20 @@
 package techgravy.popularmovies.models;
 
+import com.google.gson.annotations.SerializedName;
+
+import co.uk.rushorm.core.Rush;
+import co.uk.rushorm.core.RushCallback;
+import co.uk.rushorm.core.RushCore;
+
 /**
  * Created by aditlal on 26/09/15.
  */
-public class MovieVideoResultModel {
+public class MovieVideoResultModel implements Rush {
 
     private String site;
 
-    private String id;
+    @SerializedName("id")
+    private String mId;
 
     private String iso_639_1;
 
@@ -19,6 +26,9 @@ public class MovieVideoResultModel {
 
     private String size;
 
+    public MovieVideoResultModel() {
+    }
+
     public String getSite() {
         return site;
     }
@@ -27,12 +37,12 @@ public class MovieVideoResultModel {
         this.site = site;
     }
 
-    public String getId() {
-        return id;
+    public String getmId() {
+        return mId;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.mId = id;
     }
 
     public String getIso_639_1() {
@@ -77,6 +87,31 @@ public class MovieVideoResultModel {
 
     @Override
     public String toString() {
-        return "ClassPojo [site = " + site + ", id = " + id + ", iso_639_1 = " + iso_639_1 + ", name = " + name + ", type = " + type + ", key = " + key + ", size = " + size + "]";
+        return "ClassPojo [site = " + site + ", mId = " + mId + ", iso_639_1 = " + iso_639_1 + ", name = " + name + ", type = " + type + ", key = " + key + ", size = " + size + "]";
+    }
+
+    @Override
+    public void save() {
+        RushCore.getInstance().save(this);
+    }
+
+    @Override
+    public void save(RushCallback callback) {
+        RushCore.getInstance().save(this, callback);
+    }
+
+    @Override
+    public void delete() {
+        RushCore.getInstance().delete(this);
+    }
+
+    @Override
+    public void delete(RushCallback callback) {
+        RushCore.getInstance().delete(this, callback);
+    }
+
+    @Override
+    public String getId() {
+        return RushCore.getInstance().getId(this);
     }
 }

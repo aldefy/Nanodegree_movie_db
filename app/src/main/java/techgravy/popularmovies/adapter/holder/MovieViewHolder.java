@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.Bind;
 import techgravy.popularmovies.R;
 import techgravy.popularmovies.activity.MovieDetailActivity;
 import techgravy.popularmovies.models.MovieResultsModel;
@@ -17,16 +19,16 @@ import techgravy.popularmovies.models.MovieResultsModel;
  */
 public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public ImageView moviePhoto;
-    public TextView movieTitle;
+    @Bind(R.id.itemImage)
+    public ImageView itemImage;
+    @Bind(R.id.itemLabel)
+    public TextView itemLabel;
     ActivityOptions options = null;
 
     public MovieViewHolder(View itemView) {
         super(itemView);
-
-        movieTitle = (TextView) itemView.findViewById(R.id.itemLabel);
-        moviePhoto = (ImageView) itemView.findViewById(R.id.itemImage);
-        moviePhoto.setOnClickListener(this);
+        ButterKnife.bind(this, itemView);
+        itemImage.setOnClickListener(this);
 
     }
 
@@ -45,4 +47,6 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
         }
 
     }
+
+
 }

@@ -4,11 +4,15 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import co.uk.rushorm.core.Rush;
+import co.uk.rushorm.core.RushCallback;
+import co.uk.rushorm.core.RushCore;
+
 /**
  * Created by aditlal on 26/09/15.
  */
 
-public class MovieDetailModel {
+public class MovieDetailModel implements Rush {
     private String budget;
 
     private String vote_average;
@@ -28,8 +32,8 @@ public class MovieDetailModel {
     private String adult;
 
     private String homepage;
-
-    private String id;
+    @SerializedName("id")
+    private String mId;
     @SerializedName("production_companies")
     private List<MovieProductionCompanies> production_companies;
 
@@ -59,6 +63,9 @@ public class MovieDetailModel {
     private String revenue;
 
     private String popularity;
+
+    public MovieDetailModel() {
+    }
 
     public String getBudget() {
         return budget;
@@ -132,12 +139,12 @@ public class MovieDetailModel {
         this.homepage = homepage;
     }
 
-    public String getId() {
-        return id;
+    public String getmId() {
+        return mId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setmId(String mId) {
+        this.mId = mId;
     }
 
     public List<MovieProductionCountries> getProduction_countries() {
@@ -179,7 +186,6 @@ public class MovieDetailModel {
     public void setOverview(String overview) {
         this.overview = overview;
     }
-
 
 
     public String getImdb_id() {
@@ -256,7 +262,18 @@ public class MovieDetailModel {
 
     @Override
     public String toString() {
-        return "ClassPojo [budget = " + budget + ", vote_average = " + vote_average + ", backdrop_path = " + backdrop_path + ", genres = " + genres + ", status = " + status + ", runtime = " + runtime + ", spoken_languages = " + spoken_languages + ", adult = " + adult + ", homepage = " + homepage + ", id = " + id + ", production_countries = " + production_countries + ", title = " + title + ", original_language = " + original_language + ", overview = " + overview + ", production_companies = " + production_companies + "" + ", imdb_id = " + imdb_id + ", release_date = " + release_date + ", original_title = " + original_title + ", vote_count = " + vote_count + ", poster_path = " + poster_path + ", video = " + video + ", tagline = " + tagline + ", revenue = " + revenue + ", popularity = " + popularity + "]";
+        return "ClassPojo [budget = " + budget + ", vote_average = " + vote_average + ", backdrop_path = " + backdrop_path + ", genres = " + genres + ", status = " + status + ", runtime = " + runtime + ", spoken_languages = " + spoken_languages + ", adult = " + adult + ", homepage = " + homepage + ", mId = " + mId + ", production_countries = " + production_countries + ", title = " + title + ", original_language = " + original_language + ", overview = " + overview + ", production_companies = " + production_companies + "" + ", imdb_id = " + imdb_id + ", release_date = " + release_date + ", original_title = " + original_title + ", vote_count = " + vote_count + ", poster_path = " + poster_path + ", video = " + video + ", tagline = " + tagline + ", revenue = " + revenue + ", popularity = " + popularity + "]";
     }
+
+    @Override
+    public void save() { RushCore.getInstance().save(this); }
+    @Override
+    public void save(RushCallback callback) { RushCore.getInstance().save(this, callback); }
+    @Override
+    public void delete() { RushCore.getInstance().delete(this); }
+    @Override
+    public void delete(RushCallback callback) { RushCore.getInstance().delete(this, callback); }
+    @Override
+    public String getId() { return RushCore.getInstance().getId(this); }
 }
 

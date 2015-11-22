@@ -1,10 +1,17 @@
 package techgravy.popularmovies.models;
 
+import com.google.gson.annotations.SerializedName;
+
+import co.uk.rushorm.core.Rush;
+import co.uk.rushorm.core.RushCallback;
+import co.uk.rushorm.core.RushCore;
+
 /**
  * Created by aditlal on 27/09/15.
  */
-public class MovieCreditsCrewModel {
-    private String id;
+public class MovieCreditsCrewModel implements Rush {
+    @SerializedName("id")
+    private String mId;
 
     private String credit_id;
 
@@ -16,12 +23,15 @@ public class MovieCreditsCrewModel {
 
     private String profile_path;
 
-    public String getId() {
-        return id;
+    public MovieCreditsCrewModel() {
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getmId() {
+        return mId;
+    }
+
+    public void setmId(String mId) {
+        this.mId = mId;
     }
 
     public String getCredit_id() {
@@ -66,6 +76,31 @@ public class MovieCreditsCrewModel {
 
     @Override
     public String toString() {
-        return "ClassPojo [id = " + id + ", credit_id = " + credit_id + ", department = " + department + ", name = " + name + ", job = " + job + ", profile_path = " + profile_path + "]";
+        return "ClassPojo [mId = " + mId + ", credit_id = " + credit_id + ", department = " + department + ", name = " + name + ", job = " + job + ", profile_path = " + profile_path + "]";
+    }
+
+    @Override
+    public void save() {
+        RushCore.getInstance().save(this);
+    }
+
+    @Override
+    public void save(RushCallback callback) {
+        RushCore.getInstance().save(this, callback);
+    }
+
+    @Override
+    public void delete() {
+        RushCore.getInstance().delete(this);
+    }
+
+    @Override
+    public void delete(RushCallback callback) {
+        RushCore.getInstance().delete(this, callback);
+    }
+
+    @Override
+    public String getId() {
+        return RushCore.getInstance().getId(this);
     }
 }

@@ -4,10 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import co.uk.rushorm.core.Rush;
+import co.uk.rushorm.core.RushCallback;
+import co.uk.rushorm.core.RushCore;
+
 /**
  * Created by aditlal on 26/09/15.
  */
-public class MovieResponseModel {
+public class MovieResponseModel implements Rush {
 
     @SerializedName("results")
     private List<MovieResultsModel> results;
@@ -17,6 +21,9 @@ public class MovieResponseModel {
     private String total_pages;
 
     private String total_results;
+
+    public MovieResponseModel() {
+    }
 
     public List<MovieResultsModel> getResults() {
         return results;
@@ -53,5 +60,30 @@ public class MovieResponseModel {
     @Override
     public String toString() {
         return "ClassPojo [results = " + results + ", page = " + page + ", total_pages = " + total_pages + ", total_results = " + total_results + "]";
+    }
+
+    @Override
+    public void save() {
+        RushCore.getInstance().save(this);
+    }
+
+    @Override
+    public void save(RushCallback callback) {
+        RushCore.getInstance().save(this, callback);
+    }
+
+    @Override
+    public void delete() {
+        RushCore.getInstance().delete(this);
+    }
+
+    @Override
+    public void delete(RushCallback callback) {
+        RushCore.getInstance().delete(this, callback);
+    }
+
+    @Override
+    public String getId() {
+        return RushCore.getInstance().getId(this);
     }
 }

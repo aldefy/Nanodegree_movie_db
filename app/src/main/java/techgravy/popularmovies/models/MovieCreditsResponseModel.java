@@ -4,11 +4,16 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import co.uk.rushorm.core.Rush;
+import co.uk.rushorm.core.RushCallback;
+import co.uk.rushorm.core.RushCore;
+
 /**
  * Created by aditlal on 27/09/15.
  */
-public class MovieCreditsResponseModel {
-    private String id;
+public class MovieCreditsResponseModel implements Rush {
+    @SerializedName("id")
+    private String mId;
 
     @SerializedName("cast")
     private List<MovieCreditsCastModel> cast;
@@ -16,12 +21,15 @@ public class MovieCreditsResponseModel {
     @SerializedName("crew")
     private List<MovieCreditsCrewModel> crew;
 
-    public String getId() {
-        return id;
+    public MovieCreditsResponseModel() {
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getmId() {
+        return mId;
+    }
+
+    public void setmId(String mId) {
+        this.mId = mId;
     }
 
     public List<MovieCreditsCastModel> getCast() {
@@ -42,6 +50,31 @@ public class MovieCreditsResponseModel {
 
     @Override
     public String toString() {
-        return "ClassPojo [id = " + id + ", cast = " + cast + ", crew = " + crew + "]";
+        return "ClassPojo [mId = " + mId + ", cast = " + cast + ", crew = " + crew + "]";
+    }
+
+    @Override
+    public void save() {
+        RushCore.getInstance().save(this);
+    }
+
+    @Override
+    public void save(RushCallback callback) {
+        RushCore.getInstance().save(this, callback);
+    }
+
+    @Override
+    public void delete() {
+        RushCore.getInstance().delete(this);
+    }
+
+    @Override
+    public void delete(RushCallback callback) {
+        RushCore.getInstance().delete(this, callback);
+    }
+
+    @Override
+    public String getId() {
+        return RushCore.getInstance().getId(this);
     }
 }

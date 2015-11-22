@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import techgravy.popularmovies.R;
@@ -23,10 +24,12 @@ import techgravy.popularmovies.utils.PaletteTransformation;
 public class DashboardRecyclerAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     private List<MovieResultsModel> itemList;
+    private List<MovieResultsModel> allObjects;
     private Context context;
 
     public DashboardRecyclerAdapter(Context context, List<MovieResultsModel> itemList) {
         this.itemList = itemList;
+        this.allObjects = itemList;
         this.context = context;
     }
 
@@ -40,17 +43,17 @@ public class DashboardRecyclerAdapter extends RecyclerView.Adapter<MovieViewHold
 
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, int position) {
-        holder.movieTitle.setText(itemList.get(position).getTitle());
+        holder.itemLabel.setText(itemList.get(position).getTitle());
         String imgUrl = "http://image.tmdb.org/t/p/" + "w342" + itemList.get(position).getBackdrop_path();
-        Logger.d("Adapter image", "url is " + imgUrl);
-        holder.moviePhoto.setTag(itemList.get(position));
-        Picasso.with(context).load(imgUrl).placeholder(R.drawable.ic_placeholder_movie).error(R.drawable.ic_placeholder_movie).transform(PaletteTransformation.instance()).into(holder.moviePhoto, new PaletteTransformation.PaletteCallback(holder.moviePhoto) {
+        Logger.d("Adapter title", "title is " + itemList.get(position).getOriginal_title());
+        holder.itemImage.setTag(itemList.get(position));
+        Picasso.with(context).load(imgUrl).placeholder(R.drawable.ic_placeholder_movie).error(R.drawable.ic_placeholder_movie).transform(PaletteTransformation.instance()).into(holder.itemImage, new PaletteTransformation.PaletteCallback(holder.itemImage) {
             @Override
             protected void onSuccess(Palette palette) {
                 Palette.Swatch vibrant = palette.getDarkVibrantSwatch();
                 if (vibrant != null) {
                     // Update the title TextView with the proper text color
-                    holder.movieTitle.setBackgroundColor(vibrant.getRgb());
+                    holder.itemLabel.setBackgroundColor(vibrant.getRgb());
                 }
             }
 
@@ -59,10 +62,29 @@ public class DashboardRecyclerAdapter extends RecyclerView.Adapter<MovieViewHold
 
             }
         });
+
     }
 
     @Override
     public int getItemCount() {
         return this.itemList.size();
     }
+
+    public void flushFilter() {
+        itemList = new ArrayList<>();
+        itemList.addAll(allObjects);
+        notifyDataSetChanged();
+    }
+
+    public void setFilter(String queryText) {
+
+        itemList = new ArrayList<>();
+        queryText = queryText.toString().toLowerCase();
+        for (MovieResultsModel item : allObjects) {
+            if (item.getTitle().toLowerCase().contains(queryText))
+                itemList.add(item);
+        }
+        notifyDataSetChanged();
+    }
+
 }

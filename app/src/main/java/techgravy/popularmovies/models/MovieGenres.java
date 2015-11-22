@@ -1,20 +1,30 @@
 package techgravy.popularmovies.models;
 
+import com.google.gson.annotations.SerializedName;
+
+import co.uk.rushorm.core.Rush;
+import co.uk.rushorm.core.RushCallback;
+import co.uk.rushorm.core.RushCore;
+
 /**
  * Created by aditlal on 26/09/15.
  */
-public class MovieGenres {
+public class MovieGenres implements Rush {
 
-    private String id;
+    @SerializedName("id")
+    private String mId;
 
     private String name;
 
-    public String getId() {
-        return id;
+    public MovieGenres() {
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getmId() {
+        return mId;
+    }
+
+    public void setmId(String mId) {
+        this.mId = mId;
     }
 
     public String getName() {
@@ -27,6 +37,17 @@ public class MovieGenres {
 
     @Override
     public String toString() {
-        return "ClassPojo [id = " + id + ", name = " + name + "]";
+        return "ClassPojo [mId = " + mId + ", name = " + name + "]";
     }
+
+    @Override
+    public void save() { RushCore.getInstance().save(this); }
+    @Override
+    public void save(RushCallback callback) { RushCore.getInstance().save(this, callback); }
+    @Override
+    public void delete() { RushCore.getInstance().delete(this); }
+    @Override
+    public void delete(RushCallback callback) { RushCore.getInstance().delete(this, callback); }
+    @Override
+    public String getId() { return RushCore.getInstance().getId(this); }
 }

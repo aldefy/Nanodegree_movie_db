@@ -7,6 +7,7 @@ import retrofit.http.Query;
 import techgravy.popularmovies.models.MovieCreditsResponseModel;
 import techgravy.popularmovies.models.MovieDetailModel;
 import techgravy.popularmovies.models.MovieResponseModel;
+import techgravy.popularmovies.models.MovieReviewModel;
 import techgravy.popularmovies.models.MovieVideoResponseModel;
 
 /**
@@ -28,5 +29,8 @@ public interface GetPopularMovieApi {
 
     @GET("/movie/{id}/credits")
     void getMovieCredits(@Path("id") String movieId, @Query("api_key") String api_key, Callback<MovieCreditsResponseModel> cb);
+
+    @GET("/movie/{id}/reviews")
+    void getMovieReviews(@Path("id") String movieId, @Query("api_key") String api_key, Callback<MovieReviewModel> cb);
 
 }
