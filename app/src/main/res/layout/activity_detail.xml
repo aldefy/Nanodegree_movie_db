@@ -135,6 +135,7 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/trailerCard"
                 android:layout_marginBottom="@dimen/card_margin"
                 android:layout_marginLeft="@dimen/card_margin"
                 android:layout_marginRight="@dimen/card_margin"
@@ -186,28 +187,11 @@
                         android:textColor="@color/black_semi_transparent"
                         tools:text="3 trailers"/>
 
-                    <!-- <RelativeLayout
-                         android:id="@+id/trailerLayout"
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:layout_below="@+id/trailerTitle"
-                         android:layout_margin="8dp">
 
-                         <ImageView
-                             android:id="@+id/trailerImage"
-                             android:layout_width="match_parent"
-                             android:layout_height="200dp"
-                             android:scaleType="fitXY"/>
-
-                         <ImageView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_centerInParent="true"
-                             android:src="@drawable/ic_utube"/>
-                     </RelativeLayout>-->
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>
+
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -215,7 +199,8 @@
                 android:layout_marginBottom="@dimen/card_margin"
                 android:layout_marginLeft="@dimen/card_margin"
                 android:layout_marginRight="@dimen/card_margin"
-                android:layout_marginTop="@dimen/card_margin">
+                android:layout_marginTop="@dimen/card_margin"
+                tools:visibility="gone">
 
                 <LinearLayout
                     style="@style/Widget.CardContent"
@@ -247,7 +232,8 @@
                 android:layout_marginBottom="@dimen/card_margin"
                 android:layout_marginLeft="@dimen/card_margin"
                 android:layout_marginRight="@dimen/card_margin"
-                android:layout_marginTop="@dimen/card_margin">
+                android:layout_marginTop="@dimen/card_margin"
+                tools:visibility="gone">
 
                 <LinearLayout
                     style="@style/Widget.CardContent"
@@ -311,6 +297,45 @@
 
 
                 </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:id="@+id/reviewCard"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/card_margin"
+                android:layout_marginLeft="@dimen/card_margin"
+                android:layout_marginRight="@dimen/card_margin"
+                android:layout_marginTop="@dimen/card_margin"
+                android:visibility="visible">
+
+                <RelativeLayout
+                    style="@style/Widget.CardContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/reviewTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="Reviews"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                        android:textColor="@color/black"/>
+
+
+                    <LinearLayout
+                        android:id="@+id/movie_detail_review_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="10dp"
+                        android:layout_below="@+id/reviewTitle"
+                        android:paddingTop="10dp"/>
+
+
+                </RelativeLayout>
 
             </android.support.v7.widget.CardView>
 

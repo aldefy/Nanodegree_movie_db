@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.style.BulletSpan;
 import android.text.util.Linkify;
@@ -19,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -47,6 +49,7 @@ import techgravy.popularmovies.models.MovieProductionCompanies;
 import techgravy.popularmovies.models.MovieProductionCountries;
 import techgravy.popularmovies.models.MovieResultsModel;
 import techgravy.popularmovies.models.MovieReviewModel;
+import techgravy.popularmovies.models.MovieReviewResults;
 import techgravy.popularmovies.models.MovieVideoResponseModel;
 import techgravy.popularmovies.models.MovieVideoResultModel;
 import techgravy.popularmovies.utils.IntentUtils;
@@ -109,6 +112,16 @@ public class MovieDetailActivity extends AppCompatActivity {
     TextView trailerCount;
     @Bind(R.id.likeFab)
     FloatingActionButton likeFab;
+    @Bind(R.id.scrollTrailer)
+    HorizontalScrollView scrollTrailer;
+    @Bind(R.id.reviewTitle)
+    TextView reviewTitle;
+    @Bind(R.id.movie_detail_review_container)
+    LinearLayout movieDetailReviewContainer;
+    @Bind(R.id.trailerCard)
+    CardView trailerCard;
+    @Bind(R.id.reviewCard)
+    CardView reviewCard;
 
 
     private String apiKey;
@@ -198,7 +211,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         getPopularMovieApi.getMovieReviews(id, apiKey, new Callback<MovieReviewModel>() {
             @Override
             public void success(MovieReviewModel movieReviewModel, Response response) {
-
+                Logger.d("Reviews", "Success " + movieReviewModel.getResults().size());
+                if (movieReviewModel.getResults().size() != 0)
+                    addReviewViews(movieReviewModel.getResults());
+                else {
+                    reviewCard.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -215,7 +233,12 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void success(MovieVideoResponseModel movieResponseModel, Response response) {
                 Logger.d("Trailer list size is : ", movieResponseModel.getResults().size() + "");
-                addTrailerViews(movieResponseModel.getResults());
+
+                if (movieResponseModel.getResults().size() != 0)
+                    addTrailerViews(movieResponseModel.getResults());
+                else {
+                    trailerCard.setVisibility(View.GONE);
+                }
 
             }
 
@@ -227,16 +250,10 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Dynamically added trailers views in the view container
-     *
-     * @param resultList list of Trailer
-     */
     private void addTrailerViews(List<MovieVideoResultModel> resultList) {
 
         final LayoutInflater inflater = LayoutInflater.from(MovieDetailActivity.this);
         trailerCount.setText(resultList.size() + " trailers");
-        boolean emptyList = resultList == null || resultList.isEmpty();
 
         if (resultList != null && !resultList.isEmpty()) {
             mMainTrailer = resultList.get(0);
@@ -281,6 +298,21 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+
+    private void addReviewViews(List<MovieReviewResults> resultList) {
+
+        final LayoutInflater inflater = LayoutInflater.from(MovieDetailActivity.this);
+
+        for (MovieReviewResults review : resultList) {
+            final View reviewView = inflater.inflate(R.layout.list_item_review, movieDetailReviewContainer, false);
+            TextView reviewAuthor = ButterKnife.findById(reviewView, R.id.list_item_review_author_text_view);
+            TextView reviewContent = ButterKnife.findById(reviewView, R.id.list_item_review_content_text_view);
+            reviewAuthor.setText(review.getAuthor());
+            reviewContent.setText(review.getContent());
+            movieDetailReviewContainer.addView(reviewView);
+        }
     }
 
 
