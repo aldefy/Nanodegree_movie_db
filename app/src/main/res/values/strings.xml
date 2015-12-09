@@ -17,4 +17,5 @@
     <string name="highestRatedMovies">Highest Rated Movies</string>
     <string name="favouriteMovies">Favorites</string>
     <string name="no_movie_selected">No Movie Selected</string>
+    <string name="action_share">Share</string>
 </resources>

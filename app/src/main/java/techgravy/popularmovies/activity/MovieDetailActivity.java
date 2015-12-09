@@ -1,5 +1,6 @@
 package techgravy.popularmovies.activity;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.style.BulletSpan;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -486,10 +488,25 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
             supportFinishAfterTransition();
             return true;
+        } else if (id == R.id.action_share) {
+            Logger.d("Trailer share", "http://www.youtube.com/watch?v=" + mMainTrailer.getKey());
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Hi , checkout this awesome trailer : " + "http://www.youtube.com/watch?v=" + mMainTrailer.getKey());
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return true;
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -522,6 +539,5 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
     }
-
 
 }
