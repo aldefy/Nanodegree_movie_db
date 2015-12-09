@@ -5,4 +5,6 @@
     <dimen name="rv_grid_spacing">2dp</dimen>
     <dimen name="card_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <integer name="grid_size">2</integer>
+    <dimen name="toolbarImageHeight">250dp</dimen>
 </resources>

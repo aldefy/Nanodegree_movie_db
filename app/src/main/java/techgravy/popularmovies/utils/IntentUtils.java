@@ -13,6 +13,7 @@ public class IntentUtils {
     public final static int POPULAR_SORT = 01;
     public final static int HIGHEST_RATED_SORT = 02;
     public final static int FAVORITES = 03;
+    public final static String MOVIE_LIST_SAVE_INSTANCE ="movie_list";
 
 
     public static void openYoutubeVideo(Context x, String id) {

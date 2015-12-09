@@ -1,23 +1,19 @@
-package techgravy.popularmovies.activity;
+package techgravy.popularmovies.fragment;
 
 import android.content.res.ColorStateList;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.text.style.BulletSpan;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
@@ -58,9 +54,9 @@ import techgravy.popularmovies.utils.Logger;
 import techgravy.popularmovies.utils.PaletteTransformation;
 
 /**
- * Created by aditlal on 26/09/15.
+ * Created by aditlal on 08/12/15.
  */
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailsFragment extends Fragment {
 
 
     String imageUrl, title, videoId1;
@@ -71,12 +67,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     GetPopularMovieApi getPopularMovieApi;
     @Bind(R.id.itemImage)
     ImageView itemImage;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbar;
-    @Bind(R.id.appbar)
-    AppBarLayout appbar;
+    @Bind(R.id.likeFab)
+    FloatingActionButton likeFab;
     @Bind(R.id.ratingTitle)
     TextView ratingTitle;
     @Bind(R.id.runningTimeTextView)
@@ -91,6 +83,12 @@ public class MovieDetailActivity extends AppCompatActivity {
     TextView trailerTitle;
     @Bind(R.id.movie_detail_trailer_container)
     LinearLayout movieDetailTrailerContainer;
+    @Bind(R.id.scrollTrailer)
+    HorizontalScrollView scrollTrailer;
+    @Bind(R.id.trailerCount)
+    TextView trailerCount;
+    @Bind(R.id.trailerCard)
+    CardView trailerCard;
     @Bind(R.id.tagText)
     TextView tagText;
     @Bind(R.id.taglineText)
@@ -103,24 +101,17 @@ public class MovieDetailActivity extends AppCompatActivity {
     TextView productionCompaniesText;
     @Bind(R.id.productionCountriesText)
     TextView productionCountriesText;
-    @Bind(R.id.nestedScrollView)
-    NestedScrollView nestedScrollView;
-    @Bind(R.id.main_content)
-    CoordinatorLayout mainContent;
-    @Bind(R.id.trailerCount)
-    TextView trailerCount;
-    @Bind(R.id.likeFab)
-    FloatingActionButton likeFab;
-    @Bind(R.id.scrollTrailer)
-    HorizontalScrollView scrollTrailer;
     @Bind(R.id.reviewTitle)
     TextView reviewTitle;
     @Bind(R.id.movie_detail_review_container)
     LinearLayout movieDetailReviewContainer;
-    @Bind(R.id.trailerCard)
-    CardView trailerCard;
     @Bind(R.id.reviewCard)
     CardView reviewCard;
+    @Bind(R.id.nestedScrollView)
+    NestedScrollView nestedScrollView;
+    @Bind(R.id.movieSelectionText)
+    TextView movieSelectionText;
+
 
     private String apiKey;
     private String imdb, genre, runningTime, released, productionCompanies, productionCountries, tagline, overview, rating;
@@ -128,68 +119,139 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ArrayList<MovieReviewResults> reviewsList;
     private MovieVideoResultModel mMainTrailer;
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handleExtras();
-        setContentView(R.layout.activity_detail);
-        ButterKnife.bind(this);
-        videoList = new ArrayList<>();
-        reviewsList = new ArrayList<>();
-        init(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
+        handleArgs();
     }
 
-    private void init(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            imdb = savedInstanceState.getString("imdb");
-            genre = savedInstanceState.getString("genreText");
-            runningTime = savedInstanceState.getString("runningTime");
-            released = savedInstanceState.getString("released");
-            productionCompanies = savedInstanceState.getString("productionCompanies");
-            productionCountries = savedInstanceState.getString("productionCountries");
-            tagline = savedInstanceState.getString("tagline");
-            overview = savedInstanceState.getString("overview");
-            rating = savedInstanceState.getString("rating");
-            imageUrl = savedInstanceState.getString("imageUrl");
-            mFavourite = savedInstanceState.getBoolean("mFavourite");
-            videoList = savedInstanceState.getParcelableArrayList("videoList");
-            reviewsList = savedInstanceState.getParcelableArrayList("reviewsList");
+    public static MovieDetailsFragment newInstance(Bundle bundle) {
+        MovieDetailsFragment fragment = new MovieDetailsFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
-            imdbText.setText(imdb);
-            tagText.setText(genre);
-            runningTimeTextView.setText(runningTime);
-            releasedTextView.setText(released);
-            productionCompaniesText.setText(productionCompanies);
-            productionCountriesText.setText(productionCountries);
-            taglineText.setText(tagline);
-            plotOverviewTextView.setText(overview);
-            ratingTitle.setText(rating);
-            if (videoList.size() != 0) {
-                addTrailerViews(videoList);
-            } else {
-                trailerCard.setVisibility(View.GONE);
-            }
-            if (reviewsList.size() != 0) {
-                addReviewViews(reviewsList);
-            } else {
-                reviewCard.setVisibility(View.GONE);
-            }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        ButterKnife.bind(this, rootView);
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            nestedScrollView.setVisibility(View.VISIBLE);
+            movieSelectionText.setVisibility(View.GONE);
             initHeader();
-            if (mFavourite) {
-                likeFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_selected));
-            } else {
-                likeFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite));
-
-            }
-        } else {
+            videoList = new ArrayList<>();
+            reviewsList = new ArrayList<>();
             apiKey = BuildConfig.API_KEY;
             getPopularMovieApi = MovieApiGenerator.createService(GetPopularMovieApi.class);
             queryFavMovieInDb();
             getMovieDetails();
-            initHeader();
         }
+
+
+        return rootView;
+    }
+
+    private void handleArgs() {
+
+        if (getArguments() != null) {
+            imageUrl = getArguments().getString("imageUrl");
+            model = getArguments().getParcelable("movieObject");
+            Logger.d("IMAGE", imageUrl);
+        }
+    }
+
+
+    private void initHeader() {
+        Picasso.with(getActivity()).load(imageUrl).transform(PaletteTransformation.instance()).into(itemImage,
+                new PaletteTransformation.PaletteCallback(itemImage) {
+                    @Override
+                    protected void onSuccess(Palette palette) {
+                        Palette.Swatch vibrant = palette.getVibrantSwatch();
+                        if (vibrant != null) {
+                            topBarLayout.setBackgroundColor(vibrant.getRgb());
+                        } else {
+                            Logger.d("Vibrant not available");
+                        }
+                        Palette.Swatch vibrantDark = palette.getDarkVibrantSwatch();
+                        if (vibrantDark != null) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                Window window = getActivity().getWindow();
+                                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                                window.setStatusBarColor(vibrantDark.getRgb());
+                            }
+                            if (vibrant == null) {
+                                topBarLayout.setBackgroundColor(vibrantDark.getRgb());
+                            }
+                            //collapsingToolbar.setContentScrim(new ColorDrawable(vibrantDark.getRgb()));
+                        }
+
+                        Palette.Swatch mutedD = palette.getDarkMutedSwatch();
+                        if (mutedD != null) {
+                             likeFab.setBackgroundTintList(ColorStateList.valueOf(mutedD.getRgb()));
+                        }
+                        Palette.Swatch muted = palette.getLightMutedSwatch();
+                        if (muted != null) {
+                            circleColor = muted.getRgb();
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+                        Logger.e("ERROR", "palette error occured");
+                    }
+                });
+        //  setupToolBar();
+        plotOverviewTextView.setText(model.getOverview());
+        ratingTitle.setText("Rating : " + model.getVote_average());
+
+        likeFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mFavourite) {
+                    likeFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite));
+                    List<MovieResultsModel> movieResultsModelList = new RushSearch()
+                            .whereEqual("mId", model.getmId())
+                            .find(MovieResultsModel.class);
+                    movieResultsModelList.get(0).delete(new RushCallback() {
+                        @Override
+                        public void complete() {
+                            mFavourite = false;
+                            Logger.d("rushdb", model.getTitle() + " got deleted");
+
+                        }
+                    });
+                } else {
+                    likeFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_selected));
+                    model.save(new RushCallback() {
+                        @Override
+                        public void complete() {
+                            mFavourite = true;
+                            Logger.d("rushdb", model.getId());
+                        }
+                    });
+
+                }
+
+
+            }
+        });
+
+    }
+
+  /*  private void setupToolBar() {
+        collapsingToolbar.setTitle(title);
+    }
+    */
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     private void queryFavMovieInDb() {
@@ -302,7 +364,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void addTrailerViews(List<MovieVideoResultModel> resultList) {
 
-        final LayoutInflater inflater = LayoutInflater.from(MovieDetailActivity.this);
+        final LayoutInflater inflater = LayoutInflater.from(getActivity());
         trailerCount.setText(resultList.size() + " trailers");
 
         if (resultList != null && !resultList.isEmpty()) {
@@ -310,7 +372,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             itemImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    IntentUtils.openYoutubeVideo(MovieDetailActivity.this, mMainTrailer.getKey());
+                    IntentUtils.openYoutubeVideo(getActivity(), mMainTrailer.getKey());
                 }
             });
             for (MovieVideoResultModel trailer : resultList) {
@@ -321,11 +383,11 @@ public class MovieDetailActivity extends AppCompatActivity {
                 playImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        IntentUtils.openYoutubeVideo(MovieDetailActivity.this, key);
+                        IntentUtils.openYoutubeVideo(getActivity(), key);
                     }
                 });
                 String url = "http://img.youtube.com/vi/" + key + "/0.jpg";
-                Picasso.with(MovieDetailActivity.this).load(url).placeholder(R.drawable.ic_placeholder_movie)
+                Picasso.with(getActivity()).load(url).placeholder(R.drawable.ic_placeholder_movie)
                         .error(R.drawable.ic_placeholder_movie).into(trailerImage, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
@@ -348,7 +410,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void addReviewViews(List<MovieReviewResults> resultList) {
 
-        final LayoutInflater inflater = LayoutInflater.from(MovieDetailActivity.this);
+        final LayoutInflater inflater = LayoutInflater.from(getActivity());
 
         for (MovieReviewResults review : resultList) {
             final View reviewView = inflater.inflate(R.layout.list_item_review, movieDetailReviewContainer, false);
@@ -373,154 +435,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Logger.e("MovieCredits Response", error.getMessage());
             }
         });
-    }
-
-
-    private void initHeader() {
-
-
-        Picasso.with(MovieDetailActivity.this).load(imageUrl).transform(PaletteTransformation.instance()).into(itemImage,
-                new PaletteTransformation.PaletteCallback(itemImage) {
-                    @Override
-                    protected void onSuccess(Palette palette) {
-                        Palette.Swatch vibrant = palette.getVibrantSwatch();
-                        if (vibrant != null) {
-                            topBarLayout.setBackgroundColor(vibrant.getRgb());
-                        } else {
-                            Logger.d("Vibrant not available");
-                        }
-                        Palette.Swatch vibrantDark = palette.getDarkVibrantSwatch();
-                        if (vibrantDark != null) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                Window window = getWindow();
-                                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                                window.setStatusBarColor(vibrantDark.getRgb());
-                            }
-                            if (vibrant == null) {
-                                topBarLayout.setBackgroundColor(vibrantDark.getRgb());
-                            }
-                            collapsingToolbar.setContentScrim(new ColorDrawable(vibrantDark.getRgb()));
-                        }
-
-                        Palette.Swatch mutedD = palette.getDarkMutedSwatch();
-                        if (mutedD != null) {
-                            likeFab.setBackgroundTintList(ColorStateList.valueOf(mutedD.getRgb()));
-                        }
-                        Palette.Swatch muted = palette.getLightMutedSwatch();
-                        if (muted != null) {
-                            circleColor = muted.getRgb();
-                        }
-                    }
-
-                    @Override
-                    public void onError() {
-                        Logger.e("ERROR", "palette error occured");
-                    }
-                });
-        setupToolBar();
-        plotOverviewTextView.setText(model.getOverview());
-        ratingTitle.setText("Rating : " + model.getVote_average());
-
-        likeFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mFavourite) {
-                    likeFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite));
-                    List<MovieResultsModel> movieResultsModelList = new RushSearch()
-                            .whereEqual("mId", model.getmId())
-                            .find(MovieResultsModel.class);
-                    movieResultsModelList.get(0).delete(new RushCallback() {
-                        @Override
-                        public void complete() {
-                            mFavourite = false;
-                            Logger.d("rushdb", model.getTitle() + " got deleted");
-
-                        }
-                    });
-                } else {
-                    likeFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_selected));
-                    model.save(new RushCallback() {
-                        @Override
-                        public void complete() {
-                            mFavourite = true;
-                            Logger.d("rushdb", model.getId());
-                        }
-                    });
-
-                }
-
-
-            }
-        });
-
-    }
-
-    private void setupToolBar() {
-        setSupportActionBar(toolbar);
-
-        try {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        collapsingToolbar.setTitle(title);
-    }
-
-    private void handleExtras() {
-        Bundle b = getIntent().getExtras();
-
-        imageUrl = b.getString("imageUrl");
-        model = (MovieResultsModel) b.get("movieObject");
-        title = model.getOriginal_title();
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == android.R.id.home) {
-            supportFinishAfterTransition();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        imdb = imdbText.getText().toString();
-        genre = tagText.getText().toString();
-        runningTime = runningTimeTextView.getText().toString();
-        released = releasedTextView.getText().toString();
-        productionCompanies = productionCompaniesText.getText().toString();
-        productionCountries = productionCountriesText.getText().toString();
-        tagline = taglineText.getText().toString();
-        overview = plotOverviewTextView.getText().toString();
-        rating = ratingTitle.getText().toString();
-
-        outState.putParcelableArrayList("videoList", videoList);
-        outState.putParcelableArrayList("reviewsList", reviewsList);
-        outState.putBoolean("mFavourite", mFavourite);
-        outState.putString("imageUrl", imageUrl);
-        outState.putString("imdb", imdb);
-        outState.putString("genreText", genre);
-        outState.putString("runningTime", runningTime);
-        outState.putString("released", released);
-        outState.putString("productionCompanies", productionCompanies);
-        outState.putString("productionCountries", productionCountries);
-        outState.putString("tagline", tagline);
-        outState.putString("overview", overview);
-        outState.putString("rating", rating);
-        for (String key : outState.keySet()) {
-            Logger.d("Bundle Debug", key + " = \"" + outState.get(key) + "\"");
-        }
-        super.onSaveInstanceState(outState);
-
     }
 
 

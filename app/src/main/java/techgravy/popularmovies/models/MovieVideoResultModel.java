@@ -1,5 +1,8 @@
 package techgravy.popularmovies.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import co.uk.rushorm.core.Rush;
@@ -9,7 +12,7 @@ import co.uk.rushorm.core.RushCore;
 /**
  * Created by aditlal on 26/09/15.
  */
-public class MovieVideoResultModel implements Rush {
+public class MovieVideoResultModel implements Rush , Parcelable {
 
     private String site;
 
@@ -28,6 +31,28 @@ public class MovieVideoResultModel implements Rush {
 
     public MovieVideoResultModel() {
     }
+
+    protected MovieVideoResultModel(Parcel in) {
+        site = in.readString();
+        mId = in.readString();
+        iso_639_1 = in.readString();
+        name = in.readString();
+        type = in.readString();
+        key = in.readString();
+        size = in.readString();
+    }
+
+    public static final Creator<MovieVideoResultModel> CREATOR = new Creator<MovieVideoResultModel>() {
+        @Override
+        public MovieVideoResultModel createFromParcel(Parcel in) {
+            return new MovieVideoResultModel(in);
+        }
+
+        @Override
+        public MovieVideoResultModel[] newArray(int size) {
+            return new MovieVideoResultModel[size];
+        }
+    };
 
     public String getSite() {
         return site;
@@ -113,5 +138,17 @@ public class MovieVideoResultModel implements Rush {
     @Override
     public String getId() {
         return RushCore.getInstance().getId(this);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(site);
+        dest.writeString(mId);
+        dest.writeString(key);
     }
 }

@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import techgravy.popularmovies.R;
 import techgravy.popularmovies.adapter.holder.MovieViewHolder;
+import techgravy.popularmovies.interfaces.ItemClickListener;
 import techgravy.popularmovies.models.MovieResultsModel;
 import techgravy.popularmovies.utils.Logger;
 import techgravy.popularmovies.utils.PaletteTransformation;
@@ -26,18 +26,20 @@ public class DashboardRecyclerAdapter extends RecyclerView.Adapter<MovieViewHold
     private List<MovieResultsModel> itemList;
     private List<MovieResultsModel> allObjects;
     private Context context;
+    ItemClickListener itemClickListener;
 
-    public DashboardRecyclerAdapter(Context context, List<MovieResultsModel> itemList) {
+    public DashboardRecyclerAdapter(Context context, List<MovieResultsModel> itemList, ItemClickListener itemClickListener) {
         this.itemList = itemList;
         this.allObjects = itemList;
         this.context = context;
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_item_dashboard, null);
-        MovieViewHolder rcv = new MovieViewHolder(layoutView);
+        MovieViewHolder rcv = new MovieViewHolder(layoutView, itemClickListener);
         return rcv;
     }
 
@@ -70,21 +72,7 @@ public class DashboardRecyclerAdapter extends RecyclerView.Adapter<MovieViewHold
         return this.itemList.size();
     }
 
-    public void flushFilter() {
-        itemList = new ArrayList<>();
-        itemList.addAll(allObjects);
-        notifyDataSetChanged();
+    public MovieResultsModel getItemAtPos(int pos) {
+        return itemList.get(pos);
     }
-
-    public void setFilter(String queryText) {
-
-        itemList = new ArrayList<>();
-        queryText = queryText.toString().toLowerCase();
-        for (MovieResultsModel item : allObjects) {
-            if (item.getTitle().toLowerCase().contains(queryText))
-                itemList.add(item);
-        }
-        notifyDataSetChanged();
-    }
-
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="grid_size">2</integer>
+    <dimen name="toolbarImageHeight">350dp</dimen>
+
+</resources>

@@ -1,5 +1,8 @@
 package techgravy.popularmovies.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import co.uk.rushorm.core.Rush;
@@ -9,7 +12,7 @@ import co.uk.rushorm.core.RushCore;
 /**
  * Created by aditlal on 28/10/15.
  */
-public class MovieReviewResults implements Rush {
+public class MovieReviewResults implements Rush,Parcelable {
 
     private String content;
 
@@ -89,4 +92,20 @@ public class MovieReviewResults implements Rush {
     public String getId() {
         return RushCore.getInstance().getId(this);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(content);
+        dest.writeString(mId);
+        dest.writeString(author);
+        dest.writeString(url);
+    }
+
+
+
 }
