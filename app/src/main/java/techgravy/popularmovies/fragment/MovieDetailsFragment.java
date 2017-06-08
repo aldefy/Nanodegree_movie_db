@@ -28,7 +28,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import co.uk.rushorm.core.RushCallback;
 import co.uk.rushorm.core.RushSearch;
@@ -65,51 +65,51 @@ public class MovieDetailsFragment extends Fragment {
     int circleColor;
     MovieDetailModel detailModel;
     GetPopularMovieApi getPopularMovieApi;
-    @Bind(R.id.itemImage)
+    @BindView(R.id.itemImage)
     ImageView itemImage;
-    @Bind(R.id.likeFab)
+    @BindView(R.id.likeFab)
     FloatingActionButton likeFab;
-    @Bind(R.id.ratingTitle)
+    @BindView(R.id.ratingTitle)
     TextView ratingTitle;
-    @Bind(R.id.runningTimeTextView)
+    @BindView(R.id.runningTimeTextView)
     TextView runningTimeTextView;
-    @Bind(R.id.releasedTextView)
+    @BindView(R.id.releasedTextView)
     TextView releasedTextView;
-    @Bind(R.id.topBarLayout)
+    @BindView(R.id.topBarLayout)
     RelativeLayout topBarLayout;
-    @Bind(R.id.plotOverviewTextView)
+    @BindView(R.id.plotOverviewTextView)
     TextView plotOverviewTextView;
-    @Bind(R.id.trailerTitle)
+    @BindView(R.id.trailerTitle)
     TextView trailerTitle;
-    @Bind(R.id.movie_detail_trailer_container)
+    @BindView(R.id.movie_detail_trailer_container)
     LinearLayout movieDetailTrailerContainer;
-    @Bind(R.id.scrollTrailer)
+    @BindView(R.id.scrollTrailer)
     HorizontalScrollView scrollTrailer;
-    @Bind(R.id.trailerCount)
+    @BindView(R.id.trailerCount)
     TextView trailerCount;
-    @Bind(R.id.trailerCard)
+    @BindView(R.id.trailerCard)
     CardView trailerCard;
-    @Bind(R.id.tagText)
+    @BindView(R.id.tagText)
     TextView tagText;
-    @Bind(R.id.taglineText)
+    @BindView(R.id.taglineText)
     TextView taglineText;
-    @Bind(R.id.tagLineDivider)
+    @BindView(R.id.tagLineDivider)
     View tagLineDivider;
-    @Bind(R.id.imdbText)
+    @BindView(R.id.imdbText)
     TextView imdbText;
-    @Bind(R.id.productionCompaniesText)
+    @BindView(R.id.productionCompaniesText)
     TextView productionCompaniesText;
-    @Bind(R.id.productionCountriesText)
+    @BindView(R.id.productionCountriesText)
     TextView productionCountriesText;
-    @Bind(R.id.reviewTitle)
+    @BindView(R.id.reviewTitle)
     TextView reviewTitle;
-    @Bind(R.id.movie_detail_review_container)
+    @BindView(R.id.movie_detail_review_container)
     LinearLayout movieDetailReviewContainer;
-    @Bind(R.id.reviewCard)
+    @BindView(R.id.reviewCard)
     CardView reviewCard;
-    @Bind(R.id.nestedScrollView)
+    @BindView(R.id.nestedScrollView)
     NestedScrollView nestedScrollView;
-    @Bind(R.id.movieSelectionText)
+    @BindView(R.id.movieSelectionText)
     TextView movieSelectionText;
 
 
@@ -251,7 +251,6 @@ public class MovieDetailsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     private void queryFavMovieInDb() {

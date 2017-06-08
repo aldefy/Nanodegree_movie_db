@@ -20,9 +20,9 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.BindBool;
 import butterknife.BindString;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import co.uk.rushorm.core.RushSearch;
 import retrofit.Callback;
@@ -48,9 +48,9 @@ import techgravy.popularmovies.utils.Logger;
  */
 public class DashboardMovieGridFragment extends Fragment  {
 
-    @Bind(R.id.recyclerGridView)
+    @BindView(R.id.recyclerGridView)
     RecyclerView recyclerGridView;
-    @Bind(R.id.root)
+    @BindView(R.id.root)
     LinearLayout root;
     private GridLayoutManager staggeredGridLayoutManager;
     GetPopularMovieApi getPopularMovieApi;
@@ -234,7 +234,6 @@ public class DashboardMovieGridFragment extends Fragment  {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     public void sortMovies(int sortOrder) {

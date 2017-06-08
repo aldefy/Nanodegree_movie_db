@@ -19,9 +19,9 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import butterknife.Bind;
 import butterknife.BindBool;
 import butterknife.BindString;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.drakeet.materialdialog.MaterialDialog;
@@ -34,15 +34,15 @@ import techgravy.popularmovies.utils.Logger;
 
 public class MainActivity extends AppCompatActivity implements ItemClickListener {
 
-    @Bind(R.id.dashboard_toolbar)
+    @BindView(R.id.dashboard_toolbar)
     Toolbar dashboardToolbar;
-    @Bind(R.id.appbar)
+    @BindView(R.id.appbar)
     AppBarLayout appbar;
-    @Bind(R.id.coordinator)
+    @BindView(R.id.coordinator)
     CoordinatorLayout coordinator;
-    @Bind(R.id.fragmentGridContainer)
+    @BindView(R.id.fragmentGridContainer)
     FrameLayout fragmentContainer;
-    @Bind(R.id.fab)
+    @BindView(R.id.fab)
     FloatingActionButton fab;
     @BindString(R.string.popularMovies)
     String pMovieTag;

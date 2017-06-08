@@ -1,17 +1,14 @@
 package techgravy.popularmovies.adapter.holder;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
 import techgravy.popularmovies.R;
-import techgravy.popularmovies.activity.MovieDetailActivity;
 import techgravy.popularmovies.interfaces.ItemClickListener;
 import techgravy.popularmovies.models.MovieResultsModel;
 
@@ -20,9 +17,9 @@ import techgravy.popularmovies.models.MovieResultsModel;
  */
 public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    @Bind(R.id.itemImage)
+    @BindView(R.id.itemImage)
     public ImageView itemImage;
-    @Bind(R.id.itemLabel)
+    @BindView(R.id.itemLabel)
     public TextView itemLabel;
     ActivityOptions options = null;
     ItemClickListener itemClickListener;

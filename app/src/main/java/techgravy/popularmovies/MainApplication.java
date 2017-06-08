@@ -60,8 +60,7 @@ public class MainApplication extends Application {
 
 
 
-        AndroidInitializeConfig config = new AndroidInitializeConfig(getApplicationContext());
-        config.setClasses(classes);
+        AndroidInitializeConfig config = new AndroidInitializeConfig(getApplicationContext(),classes);
         RushCore.initialize(config);
 
 
